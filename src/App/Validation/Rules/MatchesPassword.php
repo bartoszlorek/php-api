@@ -4,17 +4,16 @@ namespace App\Validation\Rules;
 
 use Respect\Validation\Rules\AbstractRule;
 
-class MatchesPassword extends AbstractRule
-{
+class MatchesPassword extends AbstractRule {
+
     protected $password;
 
-    public function __construct(string $password)
-    {
+    public function __construct(string $password) {
         $this->password = $password;
     }
 
-    public function validate($input)
-    {
+    public function validate($input) {
         return password_verify($input, $this->password);
     }
+
 }

@@ -8,18 +8,17 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Handlers\Error;
 use Slim\Handlers\NotFound;
 
-class ErrorHandler extends Error
-{
-    public function __construct(bool $displayErrorDetails)
-    {
+class ErrorHandler extends Error {
+
+    public function __construct(bool $displayErrorDetails) {
         parent::__construct($displayErrorDetails);
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, \Exception $exception)
-    {
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, \Exception $exception) {
         if ($exception instanceof ModelNotFoundException) {
             return (new NotFound())($request, $response);
         }
         return parent::__invoke($request, $response, $exception);
     }
+
 }
