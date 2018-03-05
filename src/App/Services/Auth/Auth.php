@@ -46,22 +46,23 @@ class Auth {
      */
     public function attempt($email, $password) {
         if (!$user = User::where('email', $email)->first()) {
-            return false;
+            return null;
         }
         if (password_verify($password, $user->password)) {
             return $user;
         }
-        return false;
+        return null;
     }
 
     /**
-     * Retrieve a user by the JWT token from the request
+     * Retrieve a user by the JWT token from the request header:
+     * Authorization: "Bearer {token}"
      */
     public function requestUser(Request $request) {
-        // Should add more validation to the present and validity of the token?
         if ($token = $request->getAttribute('token')) {
             return User::where(static::SUBJECT_IDENTIFIER, '=', $token->sub)->first();
         }
+        return null;
     }
 
 }

@@ -19,19 +19,14 @@ return [
         'app' => [
             'name' => getenv('APP_NAME'),
             'url' => getenv('APP_URL'),
-            'env' => getenv('APP_ENV'),
-        ],
-
-        // Renderer settings
-        'renderer' => [
-            'template_path' => __DIR__ . '/../templates/',
+            'env' => getenv('APP_ENV')
         ],
 
         // Monolog settings
         'logger' => [
             'name' => getenv('APP_NAME'),
             'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
-            'level' => \Monolog\Logger::DEBUG,
+            'level' => \Monolog\Logger::DEBUG
         ],
 
         // Database settings
@@ -44,18 +39,17 @@ return [
             'port' => getenv('DB_PORT'),
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix' => '',
+            'prefix' => ''
         ],
 
-        'cors' => null !== getenv('CORS_ALLOWED_ORIGINS') ? getenv('CORS_ALLOWED_ORIGINS') : '*',
+        'cors' => getenv('CORS_ALLOWED_ORIGINS') !== null
+                ? getenv('CORS_ALLOWED_ORIGINS')
+                : '*',
 
         // jwt settings
         'jwt' => [
             'secret' => getenv('JWT_SECRET'),
-            'secure' => false,
-            "header" => "Authorization",
-            "regexp" => "/Token\s+(.*)$/i",
-            'passthrough' => ['OPTIONS'],
-        ],
-    ],
+            'secure' => false // true for HTTPS
+        ]
+    ]
 ];

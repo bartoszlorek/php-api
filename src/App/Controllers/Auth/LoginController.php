@@ -22,6 +22,7 @@ class LoginController extends BaseController {
     public function login(Request $request, Response $response) {
         $userData = $this->getParsedBody($request);
         $validation = $this->validateLoginRequest($userData);
+        
         if (
             $validation->succeed() &&
             $user = $this->auth->attempt($userData['email'], $userData['password'])
