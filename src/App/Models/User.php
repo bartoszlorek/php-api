@@ -5,20 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property integer                                  id
- * @property string                                   email
- * @property string                                   username
- * @property string                                   password
- * @property string                                   role
- * @property string                                   token
- * @property \Carbon\Carbon                           created
+ * @property integer            id
+ * @property string             email
+ * @property string             username
+ * @property string             password
+ * @property string             role
+ * @property string             token
+ * @property \Carbon\Carbon     created_at
  */
-class User extends Model
-{
-
-    /**
-     * The attributes that are mass assignable.
-     */
+class User extends Model {
     protected $fillable = [
         'email',
         'username',
@@ -27,26 +22,19 @@ class User extends Model
         'token',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     */
     protected $hidden = [
         'password',
     ];
-
-    public $timestamps = false;
-
+    
     /*
      *  Relationships
      */
 
-    public function pages()
-    {
+    public function pages() {
         return $this->belongsToMany(Page::class, 'user_pages');
     }
 
-    public function hasAccessToPage($page_id = null)
-    {
+    public function hasAccessToPage($page_id = null) {
         if (is_null($page_id)) {
             return false;
         }

@@ -41,19 +41,16 @@ class Validator
         return $this;
     }
 
-    /**
-     * Check if there is any validation error
-     */
-    public function failed()
-    {
-        return !empty($this->errors);
+    
+    public function succeed() {
+        return empty($this->errors);
     }
 
-    /**
-     * Return all validations errors if any
-     */
-    public function getErrors()
-    {
+    public function failed() {
+        return !$this->succeed();
+    }
+
+    public function getErrors() {
         return $this->errors;
     }
 

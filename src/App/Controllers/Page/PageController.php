@@ -7,33 +7,28 @@ use App\Transformers\PageTransformer;
 use Interop\Container\ContainerInterface;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
-use Respect\Validation\Validator as valid;
+use Respect\Validation\Validator as v;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class PageController
-{
+class PageController {
     protected $auth;
     protected $fractal;
     protected $validator;
     protected $db;
 
-    public function __construct(ContainerInterface $container)
-    {
+    public function __construct(ContainerInterface $container) {
         $this->auth = $container->get('auth');
         $this->fractal = $container->get('fractal');
         $this->validator = $container->get('validator');
         $this->db = $container->get('db');
     }
 
-    /**
-     * Return a all Page for a user
-     */
-    public function index(Request $request, Response $response, array $args)
-    {
+    public function index(Request $request, Response $response, array $args) {
         // TODO Extract the logic of filtering pages to its own class
 
-        $requestUserId = optional($requestUser = $this->auth->requestUser($request))->id;
+        $requestUser = $this->auth->requestUser($request);
+        $requestUserId = optional($requestUser)->id;
         $builder = Page::query()->latest()->with(['user'])->limit(20);
 
         if (is_null($requestUser)) {
@@ -58,13 +53,14 @@ class PageController
         return $response->withJson(['pages' => $data['data'], 'pagesCount' => $pagesCount]);
     }
 
-    /*
-     *  Return a single Page
-     */
-    public function show(Request $request, Response $response, array $args)
-    {
-        $requestUserId = optional($this->auth->requestUser($request))->id;
-        $page = Page::query()->where('slug', $args['slug'])->firstOrFail();
+    public function show(Request $request, Response $response, array $args) {
+        $requestUserId = optional($this
+            ->auth->requestUser($request))
+            ->id;
+
+        $page = Page::query()
+            ->where('slug', $args['slug'])
+            ->firstOrFail();
 
         $data = $this->fractal
             ->createData(new Item($page, new PageTransformer($requestUserId)))
@@ -73,23 +69,17 @@ class PageController
         return $response->withJson(['page' => $data]);
     }
 
-    /*
-     *  Create and store new page
-     */
-    public function store(Request $request, Response $response)
-    {
+    public function create(Request $request, Response $response) {
         $requestUser = $this->auth->requestUser($request);
 
         if (is_null($requestUser)) {
             return $response->withJson([], 401);
         }
-
         $this->validator->validateArray($data = $request->getParam('page'), [
-            'title' => valid::notEmpty(),
-            'description' => valid::notEmpty(),
-            'body' => valid::notEmpty(),
+            'title' => v::notEmpty(),
+            'description' => v::notEmpty(),
+            'body' => v::notEmpty()
         ]);
-
         if ($this->validator->failed()) {
             return $response->withJson(['errors' => $this->validator->getErrors()], 422);
         }
@@ -106,11 +96,7 @@ class PageController
         return $response->withJson(['page' => $data]);
     }
 
-    /*
-     *  Update Page Endpoint
-     */
-    public function update(Request $request, Response $response, array $args)
-    {
+    public function update(Request $request, Response $response, array $args) {
         $page = Page::query()->where('slug', $args['slug'])->firstOrFail();
         $requestUser = $this->auth->requestUser($request);
 
@@ -138,11 +124,7 @@ class PageController
         return $response->withJson(['page' => $data]);
     }
 
-    /**
-     * Delete Page Endpoint
-     */
-    public function destroy(Request $request, Response $response, array $args)
-    {
+    public function delete(Request $request, Response $response, array $args) {
         $page = Page::query()->where('slug', $args['slug'])->firstOrFail();
         $requestUser = $this->auth->requestUser($request);
 

@@ -14,8 +14,8 @@ class PageTransformer extends TransformerAbstract
             "slug" => $page->slug,
             "title" => $page->title,
             "body" => $page->body,
-            'created' => $page->created->toIso8601String(),
-            'updated' => isset($user->updated) ? $page->updated->toIso8601String() : $page->updated,
+            'created' => $page->created_at->toIso8601String(),
+            'updated' => isset($user->update_at) ? $page->update_at->toIso8601String() : $page->update_at,
         ];
     }
 }

@@ -4,7 +4,7 @@ CREATE TABLE pages
     slug        VARCHAR(255) NOT NULL UNIQUE,
     title       VARCHAR(255) NOT NULL UNIQUE,
     body        TEXT,
-    created     DATETIME NOT NULL,
-    updated     DATETIME NOT NULL,
+    created_at  DATETIME NOT NULL,
+    updated_at  DATETIME NOT NULL,
     PRIMARY KEY (id)
 );

@@ -14,7 +14,7 @@ class UserTransformer extends TransformerAbstract
             'email' => $user->email,
             'username' => $user->username,
             'token' => $user->token,
-            'created' => optional($user->created)->toIso8601String()
+            'created' => optional($user->created_at)->toIso8601String()
         ];
     }
 }

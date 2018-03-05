@@ -6,6 +6,6 @@ CREATE TABLE users
     password    VARCHAR(255) NOT NULL,
     role        VARCHAR(255) NOT NULL DEFAULT "user",
     token       VARCHAR(255),
-    created     DATETIME NOT NULL,
+    created_at  DATETIME NOT NULL,
     PRIMARY KEY (id)
 );

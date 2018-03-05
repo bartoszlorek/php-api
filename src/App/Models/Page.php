@@ -5,28 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property integer                                  id
- * @property string                                   title
- * @property string                                   slug
- * @property string                                   body
- * @property \Carbon\Carbon                           created
- * @property \Carbon\Carbon                           updated
+ * @property integer            id
+ * @property string             title
+ * @property string             slug
+ * @property string             body
+ * @property \Carbon\Carbon     created_at
+ * @property \Carbon\Carbon     updated_at
  */
-class Page extends Model
-{
-    /**
-     * The attributes that are mass assignable.
-     */
+class Page extends Model {
     protected $fillable = [
         'title',
         'slug',
         'body',
     ];
 
-    public $timestamps = false;
-
-    public function setSlugAttribute($value)
-    {
+    public function setSlugAttribute($value) {
         $index = 0;
         $slug = $value;
         while (self::newQuery()
@@ -35,7 +28,7 @@ class Page extends Model
             ->exists()) {
             $slug = $value . '-' . ++$index;
         }
-
+        
         return $this->attributes['slug'] = $slug;
     }
 
@@ -43,30 +36,25 @@ class Page extends Model
      *  Relationships
      */
 
-    public function users()
-    {
+    public function users() {
         return $this->belongsToMany(User::class, 'user_pages');
     }
 
-    public function comments()
-    {
+    public function comments() {
         return $this->hasMany(Comment::class);
     }
 
-    public function addUser($user_id)
-    {
+    public function addUser($user_id) {
         $this->users()->syncWithoutDetaching([$page_id]);
         return $this;
     }
 
-    public function removeUser($user_id)
-    {
+    public function removeUser($user_id) {
         $this->users()->detach($user_id);
         return $this;
     }
 
-    public function isUserPage($user_id = null)
-    {
+    public function isUserPage($user_id = null) {
         if (is_null($user_id)) {
             return false;
         }
