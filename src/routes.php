@@ -22,6 +22,7 @@ $app->group('/api', function () {
     // User Routes
     $this->get('/user', UserController::class . ':show')->add($jwtMiddleware)->setName('user.show');
     $this->put('/user', UserController::class . ':update')->add($jwtMiddleware)->setName('user.update');
+    $this->delete('/user', UserController::class . ':delete')->add($jwtMiddleware)->setName('user.delete');
 
     // Profile Routes
     // $this->get('/profiles/{username}', ProfileController::class . ':show')
