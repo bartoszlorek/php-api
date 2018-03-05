@@ -7,5 +7,6 @@ CREATE TABLE users
     role        VARCHAR(255) NOT NULL DEFAULT "user",
     token       VARCHAR(255),
     created_at  DATETIME NOT NULL,
+    updated_at  DATETIME NOT NULL,
     PRIMARY KEY (id)
 );

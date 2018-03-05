@@ -12,8 +12,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string             role
  * @property string             token
  * @property \Carbon\Carbon     created_at
+ * @property \Carbon\Carbon     updated_at
  */
 class User extends Model {
+
     protected $fillable = [
         'email',
         'username',
@@ -47,4 +49,5 @@ class User extends Model {
             ->where('page_id', $page_id)
             ->exists();
     }
+    
 }
