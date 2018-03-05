@@ -1,6 +1,5 @@
 <?php
 // Application middleware
-// e.g: $app->add(new \Slim\Csrf\Guard);
 
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -14,8 +13,7 @@ $app->add(function ($req, $res, $next) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 });
 
-// permanently redirect paths with a trailing slash
-// to their non-trailing counterpart
+// permanently redirect paths with a trailing slash to their non-trailing counterpart
 $app->add(function (Request $request, Response $response, callable $next) {
     $uri = $request->getUri();
     $path = $uri->getPath();

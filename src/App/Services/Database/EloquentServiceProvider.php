@@ -2,22 +2,19 @@
 
 namespace App\Services\Database;
 
-use Illuminate\Database\Capsule\Manager;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Illuminate\Database\Capsule\Manager;
 
-class EloquentServiceProvider implements ServiceProviderInterface
-{
+class EloquentServiceProvider implements ServiceProviderInterface {
+
     /**
-     * Registers services on the given container.
-     * This method should only be used to configure services and parameters.
-     * It should not get services.
-     * @param Container $pimple A container instance
+     * This method should only be used to configure services
+     * and parameters. It should not get services.
      */
-    public function register(Container $pimple)
-    {
+    public function register(Container $container) {
         $capsule = new Manager();
-        $config = $pimple['settings']['database'];
+        $config = $container['settings']['database'];
 
         $capsule->addConnection([
             'driver'    => $config['driver'],
@@ -27,17 +24,15 @@ class EloquentServiceProvider implements ServiceProviderInterface
             'password'  => $config['password'],
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
+            'prefix'    => ''
         ]);
 
-        // Make this Capsule instance available globally via static methods... (optional)
         $capsule->setAsGlobal();
-
-        // Setup the Eloquent ORM... (optional; unless you've used setEventDispatcher())
         $capsule->bootEloquent();
 
-        $pimple['db'] = function ($c) use ($capsule) {
+        $container['db'] = function ($c) use ($capsule) {
             return $capsule;
         };
     }
+
 }

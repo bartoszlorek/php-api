@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon     updated_at
  */
 class Page extends Model {
+
     protected $fillable = [
         'title',
         'slug',
@@ -67,4 +68,5 @@ class Page extends Model {
             ->where('page_id', $this->id)
             ->exists();
     }
+    
 }

@@ -2,22 +2,23 @@
 
 namespace App\Services\Auth;
 
-use Interop\Container\ContainerInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Interop\Container\ContainerInterface;
 
-class AuthServiceProvider implements ServiceProviderInterface
-{
+class AuthServiceProvider implements ServiceProviderInterface {
+
     /**
-     * Registers services on the given container.
-     * This method should only be used to configure services and parameters.
-     * It should not get services.
-     * @param Container $pimple A container instance
+     * This method should only be used to configure services
+     * and parameters. It should not get services.
      */
-    public function register(Container $pimple)
-    {
-        $pimple['auth'] = function (ContainerInterface $c) {
-            return new Auth($c->get('db'), $c->get('settings'));
+    public function register(Container $container) {
+        $container['auth'] = function (ContainerInterface $c) {
+            return new Auth(
+                $c->get('db'),
+                $c->get('settings')
+            );
         };
     }
+
 }

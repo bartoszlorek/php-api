@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon     updated_at
  */
 class Comment extends Model {
+
     protected $fillable = [
         'body',
         'page_id',
@@ -30,4 +31,5 @@ class Comment extends Model {
     public function user() {
         return $this->belongsTo(User::class);
     }
+    
 }
