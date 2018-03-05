@@ -2,35 +2,31 @@
 
 namespace App\Controllers\Auth;
 
-use App\Controllers\BaseController;
 use App\Models\User;
+use App\Controllers\BaseController;
 use App\Transformers\UserTransformer;
-use Interop\Container\ContainerInterface;
+
 use League\Fractal\Resource\Item;
 use Respect\Validation\Validator as v;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+/*
+{
+    "email": "user@mail.com",
+    "password": "1234",
+    "username": "John Doe"
+}
+*/
+
 class RegisterController extends BaseController {
-
-    private $auth;
-    protected $fractal;
-    protected $validator;
-    protected $db;
-
-    public function __construct(ContainerInterface $container) {
-        $this->auth = $container->get('auth');
-        $this->fractal = $container->get('fractal');
-        $this->validator = $container->get('validator');
-        $this->db = $container->get('db');
-    }
 
     public function register(Request $request, Response $response) {
         $userData = $this->getParsedBody($request);
         $validation = $this->validateRegisterRequest($userData);
 
         if ($validation->failed()) {
-            return $response->withJson(['errors' => $validation->getErrors()], 422);
+            return $this->result($response, $validation->getErrors(), 422);
         }
         $user = new User($userData);
         $user->token = $this->auth->generateToken($user);
@@ -39,19 +35,15 @@ class RegisterController extends BaseController {
 
         $resource = new Item($user, new UserTransformer());
         $user = $this->fractal->createData($resource)->toArray();
-
-        return $response->withJson([
-            'user' => $user
-        ]);
+        return $this->result($response, $user);
     }
 
     protected function validateRegisterRequest($values) {
         return $this->validator->validateArray($values, [
             'email' => v::noWhitespace()->notEmpty()->email()
                 ->existsInTable($this->db->table('users'), 'email'),
-            'username' => v::noWhitespace()->notEmpty()
-                ->existsInTable($this->db->table('users'), 'username'),
-            'password' => v::noWhitespace()->notEmpty()
+            'password' => v::noWhitespace()->notEmpty(),
+            'username' => v::notEmpty()
         ]);
     }
 

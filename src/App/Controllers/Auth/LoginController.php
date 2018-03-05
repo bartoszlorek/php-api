@@ -2,30 +2,26 @@
 
 namespace App\Controllers\Auth;
 
+use App\Controllers\BaseController;
 use App\Transformers\UserTransformer;
-use Interop\Container\ContainerInterface;
+
 use League\Fractal\Resource\Item;
-use Respect\Validation\Validator as valid;
+use Respect\Validation\Validator as v;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class LoginController extends BaseController {
-    private $auth;
-    protected $fractal;
-    protected $validator;
-    protected $db;
+/*
+{
+    "email": "user@mail.com",
+    "password": "1234"
+}
+*/
 
-    public function __construct(ContainerInterface $container) {
-        $this->auth = $container->get('auth');
-        $this->fractal = $container->get('fractal');
-        $this->validator = $container->get('validator');
-        $this->db = $container->get('db');
-    }
+class LoginController extends BaseController {
 
     public function login(Request $request, Response $response) {
         $userData = $this->getParsedBody($request);
         $validation = $this->validateLoginRequest($userData);
-        
         if (
             $validation->succeed() &&
             $user = $this->auth->attempt($userData['email'], $userData['password'])
@@ -34,13 +30,14 @@ class LoginController extends BaseController {
             $data = $this->fractal->createData(new Item($user, new UserTransformer()))->toArray();
             return $this->result($response, $data);
         }
-        return $this->result($response, 'invalid email or password', 422);
+        return $this->result($response, 'invalid e-mail or password', 422);
     }
 
     protected function validateLoginRequest($values) {
         return $this->validator->validateArray($values, [
-            'email' => valid::noWhitespace()->notEmpty(),
-            'password' => valid::noWhitespace()->notEmpty()
+            'email' => v::noWhitespace()->notEmpty(),
+            'password' => v::noWhitespace()->notEmpty()
         ]);
     }
+
 }
