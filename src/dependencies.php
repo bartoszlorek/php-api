@@ -28,6 +28,9 @@ $container['logger'] = function ($c) {
 
 $container['jwt'] = function ($c) {
     $jws_settings = $c->get('settings')['jwt'];
+    $jws_settings['error'] = function ($request, $response) {
+        return \App\Controllers\BaseController::result($response, 'unauthorized', 401);
+    };
     return new \Slim\Middleware\JwtAuthentication($jws_settings);
 };
 
