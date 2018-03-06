@@ -20,33 +20,29 @@ class Page extends Model {
         'body',
     ];
 
-    public function setSlugAttribute($value) {
-        $index = 0;
-        $slug = $value;
-        while (self::newQuery()
-            ->where('slug', $slug)
-            ->where('id', '!=', $this->id)
-            ->exists()) {
-            $slug = $value . '-' . ++$index;
-        }
-        
-        return $this->attributes['slug'] = $slug;
-    }
+    // TODO: handle slug
+
+    // public function setSlugAttribute($value) {
+    //     $index = 0;
+    //     $slug = $value;
+    //     while (self::newQuery()
+    //         ->where('slug', $slug)
+    //         ->where('id', '!=', $this->id)
+    //         ->exists()) {
+    //         $slug = $value . '-' . ++$index;
+    //     }
+    //     return $this->attributes['slug'] = $slug;
+    // }
 
     /*
      *  Relationships
      */
-
     public function users() {
-        return $this->belongsToMany(User::class, 'user_pages');
-    }
-
-    public function comments() {
-        return $this->hasMany(Comment::class);
+        return $this->belongsToMany(User::class, 'pages_users');
     }
 
     public function addUser($user_id) {
-        $this->users()->syncWithoutDetaching([$page_id]);
+        $this->users()->syncWithoutDetaching([$user_id]);
         return $this;
     }
 
@@ -55,18 +51,18 @@ class Page extends Model {
         return $this;
     }
 
-    public function isUserPage($user_id = null) {
-        if (is_null($user_id)) {
-            return false;
-        }
-        if ($user_id instanceof self) {
-            $user_id = $user_id->id;
-        }
-        return $this->newBaseQueryBuilder()
-            ->from('user_pages')
-            ->where('user_id', $user_id)
-            ->where('page_id', $this->id)
-            ->exists();
-    }
+    // public function isUserPage($user_id = null) {
+    //     if (is_null($user_id)) {
+    //         return false;
+    //     }
+    //     if ($user_id instanceof self) {
+    //         $user_id = $user_id->id;
+    //     }
+    //     return $this->newBaseQueryBuilder()
+    //         ->from('user_pages')
+    //         ->where('user_id', $user_id)
+    //         ->where('page_id', $this->id)
+    //         ->exists();
+    // }
     
 }

@@ -16,13 +16,11 @@ use Slim\Http\Response;
     "password": "1234"
 }
 */
-
 class LoginController extends BaseController {
 
     public function login(Request $request, Response $response) {
         $userData = $this->getParsedBody($request);
         $validation = $this->validateLoginRequest($userData);
-        
         if (
             $validation->succeed() &&
             $user = $this->auth->attempt($userData['email'], $userData['password'])
@@ -31,9 +29,12 @@ class LoginController extends BaseController {
             $data = $this->fractal->createData(new Item($user, new UserTransformer()))->toArray();
             return $this->render($response, $data);
         }
-        return $this->render($response, 'Invalid e-mail or password', 422);
+        return $this->render($response, 'invalid e-mail or password', 422);
     }
 
+    /**
+     * Validation
+     */
     protected function validateLoginRequest($values) {
         return $this->validator->validateArray($values, [
             'email' => v::noWhitespace()->notEmpty(),

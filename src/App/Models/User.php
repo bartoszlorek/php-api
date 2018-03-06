@@ -31,23 +31,22 @@ class User extends Model {
     /*
      *  Relationships
      */
-
     public function pages() {
-        return $this->belongsToMany(Page::class, 'user_pages');
+        return $this->belongsToMany(Page::class, 'pages_users');
     }
 
-    public function hasAccessToPage($page_id = null) {
-        if (is_null($page_id)) {
-            return false;
-        }
-        if ($page_id instanceof self) {
-            $page_id = $page_id->id;
-        }
-        return $this->newBaseQueryBuilder()
-            ->from('user_pages')
-            ->where('user_id', $this->id)
-            ->where('page_id', $page_id)
-            ->exists();
-    }
+    // public function hasAccessToPage($page_id = null) {
+    //     if (is_null($page_id)) {
+    //         return false;
+    //     }
+    //     if ($page_id instanceof self) {
+    //         $page_id = $page_id->id;
+    //     }
+    //     return $this->newBaseQueryBuilder()
+    //         ->from('user_pages')
+    //         ->where('user_id', $this->id)
+    //         ->where('page_id', $page_id)
+    //         ->exists();
+    // }
     
 }

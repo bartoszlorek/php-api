@@ -18,7 +18,6 @@ use Slim\Http\Response;
     "username": "John Doe"
 }
 */
-
 class RegisterController extends BaseController {
 
     public function register(Request $request, Response $response) {
@@ -35,9 +34,12 @@ class RegisterController extends BaseController {
 
         $resource = new Item($user, new UserTransformer());
         $user = $this->fractal->createData($resource)->toArray();
-        return $this->render($response, $user);
+        return $this->render($response, $user, 201);
     }
 
+    /**
+     * Validation
+     */
     protected function validateRegisterRequest($values) {
         return $this->validator->validateArray($values, [
             'email' => v::noWhitespace()->notEmpty()->email()

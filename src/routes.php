@@ -1,12 +1,13 @@
 <?php
 
+use App\Controllers\Auth\RegisterController;
+use App\Controllers\Auth\LoginController;
+use App\Controllers\User\UserController;
 use App\Controllers\Page\PageController;
 use App\Controllers\Page\CommentController;
 use App\Controllers\Page\FavoriteController;
-use App\Controllers\Auth\LoginController;
-use App\Controllers\Auth\RegisterController;
 use App\Controllers\User\ProfileController;
-use App\Controllers\User\UserController;
+
 use Slim\Http\Request;
 use Slim\Http\Response;
 
@@ -16,34 +17,25 @@ $app->group('/api', function () {
     $optionalAuth = $this->getContainer()->get('optionalAuth');
 
     // Auth Routes
-    $this->post('/users', RegisterController::class . ':register')->setName('auth.register');
-    $this->post('/users/login', LoginController::class . ':login')->setName('auth.login');
+    $this->post('/auth/register', RegisterController::class . ':register')->setName('auth.register');
+    $this->post('/auth/login', LoginController::class . ':login')->setName('auth.login');
 
     // User Routes
     $this->get('/user', UserController::class . ':show')->add($jwtMiddleware)->setName('user.show');
     $this->put('/user', UserController::class . ':update')->add($jwtMiddleware)->setName('user.update');
     $this->delete('/user', UserController::class . ':delete')->add($jwtMiddleware)->setName('user.delete');
 
-    // Profile Routes
-    // $this->get('/profiles/{username}', ProfileController::class . ':show')
-    //     ->add($optionalAuth)
-    //     ->setName('profile.show');
-    // $this->post('/profiles/{username}/follow', ProfileController::class . ':follow')
-    //     ->add($jwtMiddleware)
-    //     ->setName('profile.follow');
-    // $this->delete('/profiles/{username}/follow', ProfileController::class . ':unfollow')
-    //     ->add($jwtMiddleware)
-    //     ->setName('profile.unfollow');
+    // Page Routes
+    $this->post('/page', PageController::class . ':create')->add($jwtMiddleware)->setName('page.create');
+    $this->get('/page', PageController::class . ':index')->add($optionalAuth)->setName('page.index');
 
-    // // Articles Routes
-    // $this->get('/articles/feed', ArticleController::class . ':index')->add($optionalAuth)->setName('article.index');
-    // $this->get('/articles/{slug}', ArticleController::class . ':show')->add($optionalAuth)->setName('article.show');
-    // $this->put('/articles/{slug}',
-    //     ArticleController::class . ':update')->add($jwtMiddleware)->setName('article.update');
-    // $this->delete('/articles/{slug}',
-    //     ArticleController::class . ':destroy')->add($jwtMiddleware)->setName('article.destroy');
-    // $this->post('/articles', ArticleController::class . ':store')->add($jwtMiddleware)->setName('article.store');
-    // $this->get('/articles', ArticleController::class . ':index')->add($optionalAuth)->setName('article.index');
+    $this->get('/page/{slug}', PageController::class . ':show')->add($optionalAuth)->setName('page.show');
+    $this->put('/page/{slug}', PageController::class . ':update')->add($jwtMiddleware)->setName('page.update');
+    $this->delete('/page/{slug}', PageController::class . ':delete')->add($jwtMiddleware)->setName('page.delete');
+    
+
+
+
 
     // // Comments
     // $this->get('/articles/{slug}/comments',

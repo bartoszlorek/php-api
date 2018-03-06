@@ -8,7 +8,7 @@ class MatchesPasswordException extends ValidationException {
 
     public static $defaultTemplates = [
         self::MODE_DEFAULT => [
-            self::STANDARD => 'Is invalid'
+            self::STANDARD => 'is invalid'
         ]
     ];
 

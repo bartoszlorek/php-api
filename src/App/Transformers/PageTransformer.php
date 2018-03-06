@@ -7,6 +7,12 @@ use League\Fractal\TransformerAbstract;
 
 class PageTransformer extends TransformerAbstract {
 
+    // protected $excludes;
+
+    // public function __construct($excludes) {
+    //     $this->excludes = $excludes;
+    // }
+
     public function transform(Page $page) {
         return [
             "id" => $page->id,
@@ -14,7 +20,7 @@ class PageTransformer extends TransformerAbstract {
             "title" => $page->title,
             "body" => $page->body,
             'created' => $page->created_at->toIso8601String(),
-            'updated' => isset($user->update_at) ? $page->update_at->toIso8601String() : $page->update_at
+            'updated' => $page->updated_at->toIso8601String()
         ];
     }
     

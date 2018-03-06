@@ -13,6 +13,10 @@ use Slim\Http\Response;
 
 class UserController extends BaseController {
 
+    /**
+     * Return a Single User
+     * @return Response
+     */
     public function show(Request $request, Response $response) {
         if ($user = $this->auth->requestUser($request)) {
             $data = $this->fractal->createData(new Item($user, new UserTransformer()))->toArray();
@@ -21,6 +25,10 @@ class UserController extends BaseController {
         return Error::unauthorized($response);
     }
 
+    /**
+     * Update a User
+     * @return Response
+     */
     public function update(Request $request, Response $response) {
         if ($user = $this->auth->requestUser($request)) {
             $requestData = $this->getParsedBody($request);
@@ -35,7 +43,6 @@ class UserController extends BaseController {
                 'password' => isset($requestData['password']) ? password_hash($requestData['password'],
                     PASSWORD_DEFAULT) : $user->password
             ]);
-
             // regenerate token after changes
             $user->token = $this->auth->generateToken($user);
             $data = $this->fractal->createData(new Item($user, new UserTransformer()))->toArray();
@@ -44,6 +51,10 @@ class UserController extends BaseController {
         return Error::unauthorized($response);
     }
 
+    /**
+     * Delete a User
+     * @return Response
+     */
     public function delete(Request $request, Response $response) {
         if ($user = $this->auth->requestUser($request)) {
             $user->delete();
@@ -52,6 +63,9 @@ class UserController extends BaseController {
         return Error::unauthorized($response);
     }
 
+    /**
+     * Validation
+     */
     protected function validateUpdateRequest($values, $userId) {
         return $this->validator->validateArray($values, [
             'email' => v::optional(v::noWhitespace()->notEmpty()->email()

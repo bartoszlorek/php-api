@@ -25,8 +25,12 @@ class BaseController {
         return Json::getParsedBody($request);
     }
 
-    public function render(Response $response, $value = '', int $code = 200) {
+    public function render(Response $response, $value = null, $code = 200) {
         return Json::render($response, $value, $code);
+    }
+
+    public function parseArgs(array $args, array $defaults = array()) {
+        return array_merge($defaults, $args);
     }
 
 }

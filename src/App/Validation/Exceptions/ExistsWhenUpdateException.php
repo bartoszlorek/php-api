@@ -8,10 +8,10 @@ class ExistsWhenUpdateException extends ValidationException {
 
     public static $defaultTemplates = [
         self::MODE_DEFAULT => [
-            self::STANDARD => 'Has already been taken'
+            self::STANDARD => 'has already been taken'
         ],
         self::MODE_NEGATIVE => [
-            self::STANDARD => 'This does not exist'
+            self::STANDARD => 'this does not exist'
         ]
     ];
 

@@ -8,10 +8,10 @@ class EmailAvailableException extends ValidationException {
 
     public static $defaultTemplates = [
         self::MODE_DEFAULT => [
-            self::STANDARD => 'E-mail already exists'
+            self::STANDARD => 'e-mail already exists'
         ],
         self::MODE_NEGATIVE => [
-            self::STANDARD => 'E-mail does not exist'
+            self::STANDARD => 'e-mail does not exist'
         ]
     ];
 

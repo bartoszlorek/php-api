@@ -26,7 +26,7 @@ class CommentTransformer extends TransformerAbstract {
             'body' => $comment->body,
             'page_id' => $comment->page_id,
             'created' => $comment->created_at->toIso8601String(),
-            'updated' => isset($user->update_at) ? $comment->update_at->toIso8601String() : $comment->update_at
+            'updated' => isset($user->updated_at) ? $comment->updated_at->toIso8601String() : $comment->updated_at
         ];
     }
 

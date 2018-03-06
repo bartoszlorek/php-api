@@ -3,56 +3,61 @@
 namespace App\Controllers\Page;
 
 use App\Models\Page;
+use App\Controllers\BaseController;
 use App\Transformers\PageTransformer;
-use Interop\Container\ContainerInterface;
+use App\Exceptions\Error;
+
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use Respect\Validation\Validator as v;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class PageController {
-    protected $auth;
-    protected $fractal;
-    protected $validator;
-    protected $db;
+/*
+{
+    "title": "Hello World!",
+    "body": "1234"
+}
+*/
+class PageController extends BaseController {
 
-    public function __construct(ContainerInterface $container) {
-        $this->auth = $container->get('auth');
-        $this->fractal = $container->get('fractal');
-        $this->validator = $container->get('validator');
-        $this->db = $container->get('db');
+    private function getPages(array $args) {
+        if (isset($args['user_id'])) {
+            return array();
+        }
+        $parsed = $this->parseArgs($args, [
+            'amount' => 1,
+            'offset' => 0
+        ]);
+        return Page::query()
+            ->order_by('updated_at', 'desc')
+            ->with('user')
+            ->whereIn('users', $args['user_id'])
+            ->slice($parsed['offset'], $parsed['amount'])
+            ->get();
     }
 
+    /**
+     * Return List of Pages
+     * @return Response
+     */
     public function index(Request $request, Response $response, array $args) {
-        // TODO Extract the logic of filtering pages to its own class
-
-        $requestUser = $this->auth->requestUser($request);
-        $requestUserId = optional($requestUser)->id;
-        $builder = Page::query()->latest()->with(['user'])->limit(20);
-
-        if (is_null($requestUser)) {
-            return $response->withJson([], 401);
+        if (!$user = $this->auth->requestUser($request)) {
+            return Error::unauthorized($response);
         }
-        $builder->whereIn('users', $requestUserId);
+        $data = $this->getParsedBody($request);
+        $data['user_id'] = $user->id;
+        $pages = $this->getPages($data);
 
-        if ($limit = $request->getParam('limit')) {
-            $builder->limit($limit);
-        }
-        if ($offset = $request->getParam('offset')) {
-            $builder->offset($offset);
-        }
-
-        $pagesCount = $builder->count();
-        $pages = $builder->get();
-
-        $data = $this->fractal
-            ->createData(new Collection($pages, new PageTransformer($requestUserId)))
-            ->toArray();
-
-        return $response->withJson(['pages' => $data['data'], 'pagesCount' => $pagesCount]);
+        $resource = new Collection($pages, new PageTransformer($user->id));
+        $pages = $this->fractal->createData($resource)->toArray();
+        return $this->render($response, $pages);
     }
 
+    /**
+     * Return a Single Page
+     * @return Response
+     */
     public function show(Request $request, Response $response, array $args) {
         $requestUserId = optional($this
             ->auth->requestUser($request))
@@ -69,33 +74,34 @@ class PageController {
         return $response->withJson(['page' => $data]);
     }
 
+    /**
+     * Create a New Page
+     * @return Response
+     */
     public function create(Request $request, Response $response) {
-        $requestUser = $this->auth->requestUser($request);
-
-        if (is_null($requestUser)) {
-            return $response->withJson([], 401);
+        if (!$user = $this->auth->requestUser($request)) {
+            return Error::unauthorized($response);
         }
-        $this->validator->validateArray($data = $request->getParam('page'), [
-            'title' => v::notEmpty(),
-            'description' => v::notEmpty(),
-            'body' => v::notEmpty()
-        ]);
-        if ($this->validator->failed()) {
-            return $response->withJson(['errors' => $this->validator->getErrors()], 422);
-        }
+        $pageData = $this->getParsedBody($request);
+        $validation = $this->validateCreateRequest($pageData);
 
-        $page = new Page($request->getParam('page'));
+        if ($validation->failed()) {
+            return $this->render($response, $validation->getErrors(), 422);
+        }
+        $page = new Page($pageData);
         $page->slug = str_slug($page->title);
-        $page->users[] = $requestUser->id;
+        $page->users[] = $user->id;
         $page->save();
 
-        $data = $this->fractal
-            ->createData(new Item($page, new PageTransformer()))
-            ->toArray();
-
-        return $response->withJson(['page' => $data]);
+        $resource = new Item($page, new PageTransformer());
+        $page = $this->fractal->createData($resource)->toArray();
+        return $this->render($response, $page, 201);
     }
 
+    /**
+     * Update a Page
+     * @return Response
+     */
     public function update(Request $request, Response $response, array $args) {
         $page = Page::query()->where('slug', $args['slug'])->firstOrFail();
         $requestUser = $this->auth->requestUser($request);
@@ -124,6 +130,10 @@ class PageController {
         return $response->withJson(['page' => $data]);
     }
 
+    /**
+     * Delete a Page
+     * @return Response
+     */
     public function delete(Request $request, Response $response, array $args) {
         $page = Page::query()->where('slug', $args['slug'])->firstOrFail();
         $requestUser = $this->auth->requestUser($request);
@@ -138,4 +148,15 @@ class PageController {
 
         return $response->withJson([], 200);
     }
+
+    /**
+     * Validation
+     */
+    protected function validateCreateRequest($values) {
+        return $this->validator->validateArray($values, [
+            'title' => v::notEmpty(),
+            'body' => v::notEmpty()
+        ]);
+    }
+
 }

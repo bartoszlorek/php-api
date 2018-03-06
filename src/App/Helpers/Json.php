@@ -8,7 +8,8 @@ use Slim\Http\Response;
 class Json {
 
     public static function getParsedBody(Request $request) {
-        return json_decode($request->getBody(), true);
+        $result = json_decode($request->getBody(), true);
+        return is_null($result) ? array() : $result;
     }
 
     public static function render(Response $response, $value = null, int $code = 200) {
