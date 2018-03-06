@@ -79,6 +79,5 @@ $app->group('/api', function () {
 
 // Routes
 $app->get('/[{name}]', function (Request $request, Response $response, array $args) {
-    $this->logger->info("App '/' route");
-    return $response->getBody()->write('api');
+    return \App\Exceptions\Error::notFound($response);
 });
