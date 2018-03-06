@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a5ce0f8e1e1ca7854c26774a11aea3f1",
+    "content-hash": "daaa9bd6fc11214ee4e802cc3a442e99",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -105,6 +105,52 @@
             "time": "2018-01-09T20:05:19+00:00"
         },
         {
+            "name": "entomb/slim-json-api",
+            "version": "1.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/entomb/slim-json-api.git",
+                "reference": "c11e001ab98e7df4dcb7b096fb1c9506d21c7e16"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/entomb/slim-json-api/zipball/c11e001ab98e7df4dcb7b096fb1c9506d21c7e16",
+                "reference": "c11e001ab98e7df4dcb7b096fb1c9506d21c7e16",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "jsonAPI/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Tavares",
+                    "email": "the.entomb@gmail.com",
+                    "homepage": "https://github.com/entomb",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Slim extension to implement fast JSON API's",
+            "homepage": "https://github.com/entomb/slim-json-api",
+            "keywords": [
+                "api",
+                "json",
+                "middleware",
+                "slim",
+                "view"
+            ],
+            "time": "2016-06-13T18:16:16+00:00"
+        },
+        {
             "name": "firebase/php-jwt",
             "version": "v5.0.0",
             "source": {
@@ -199,6 +245,58 @@
                 "fixtures"
             ],
             "time": "2017-08-15T16:48:10+00:00"
+        },
+        {
+            "name": "http-interop/http-factory",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/http-interop/http-factory.git",
+                "reference": "c2587cc0a6f74987fefb5b8074acfd32c69a4b0f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/http-interop/http-factory/zipball/c2587cc0a6f74987fefb5b8074acfd32c69a4b0f",
+                "reference": "c2587cc0a6f74987fefb5b8074acfd32c69a4b0f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Interop\\Http\\Factory\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP message factories",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "psr",
+                "psr-17",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2017-03-24T14:48:51+00:00"
         },
         {
             "name": "illuminate/container",
@@ -795,6 +893,112 @@
             "time": "2016-08-06T14:39:51+00:00"
         },
         {
+            "name": "psr/http-server-handler",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-handler.git",
+                "reference": "439d92054dc06097f2406ec074a2627839955a02"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-handler/zipball/439d92054dc06097f2406ec074a2627839955a02",
+                "reference": "439d92054dc06097f2406ec074a2627839955a02",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side request handler",
+            "keywords": [
+                "handler",
+                "http",
+                "http-interop",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response",
+                "server"
+            ],
+            "time": "2018-01-22T17:04:15+00:00"
+        },
+        {
+            "name": "psr/http-server-middleware",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-middleware.git",
+                "reference": "ea17eb1fb2c8df6db919cc578451a8013c6a0ae5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-middleware/zipball/ea17eb1fb2c8df6db919cc578451a8013c6a0ae5",
+                "reference": "ea17eb1fb2c8df6db919cc578451a8013c6a0ae5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0",
+                "psr/http-server-handler": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side middleware",
+            "keywords": [
+                "http",
+                "http-interop",
+                "middleware",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2018-01-22T17:08:31+00:00"
+        },
+        {
             "name": "psr/log",
             "version": "1.0.2",
             "source": {
@@ -1151,34 +1355,85 @@
             "time": "2018-02-22T06:28:18+00:00"
         },
         {
-            "name": "tuupola/slim-jwt-auth",
-            "version": "2.3.3",
+            "name": "tuupola/callable-handler",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/tuupola/slim-jwt-auth.git",
-                "reference": "1f9fb673e4f5bb9ca4104e328aabfc2e4af38c32"
+                "url": "https://github.com/tuupola/callable-handler.git",
+                "reference": "5141efa1e974687a3fa53338811a988198f50662"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tuupola/slim-jwt-auth/zipball/1f9fb673e4f5bb9ca4104e328aabfc2e4af38c32",
-                "reference": "1f9fb673e4f5bb9ca4104e328aabfc2e4af38c32",
+                "url": "https://api.github.com/repos/tuupola/callable-handler/zipball/5141efa1e974687a3fa53338811a988198f50662",
+                "reference": "5141efa1e974687a3fa53338811a988198f50662",
                 "shasum": ""
             },
             "require": {
-                "firebase/php-jwt": "^3.0 || ^4.0 || ^5.0",
-                "php": "^5.5 || ^7.0",
-                "psr/http-message": "^1.0",
-                "psr/log": "^1.0"
+                "php": "^7.0",
+                "psr/http-server-middleware": "^1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.6",
-                "squizlabs/php_codesniffer": "^2.3",
-                "zendframework/zend-diactoros": "^1.3"
+                "codedungeon/phpunit-result-printer": "^0.4.4",
+                "overtrue/phplint": "^1.0",
+                "phpunit/phpunit": "^6.5",
+                "squizlabs/php_codesniffer": "^3.2",
+                "tuupola/http-factory": "^0.3.0",
+                "zendframework/zend-diactoros": "^1.6"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Slim\\Middleware\\": "src"
+                    "Tuupola\\Middleware\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mika Tuupola",
+                    "email": "tuupola@appelsiini.net",
+                    "homepage": "https://appelsiini.net/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Compatibility layer for PSR-7 double pass and PSR-15 middlewares.",
+            "homepage": "https://github.com/tuupola/callable-handler",
+            "keywords": [
+                "middleware",
+                "psr-15",
+                "psr-7"
+            ],
+            "time": "2018-01-23T04:07:25+00:00"
+        },
+        {
+            "name": "tuupola/http-factory",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tuupola/http-factory.git",
+                "reference": "57b2e19ff3f4af0bbee4e31fd282689be351f1ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tuupola/http-factory/zipball/57b2e19ff3f4af0bbee4e31fd282689be351f1ad",
+                "reference": "57b2e19ff3f4af0bbee4e31fd282689be351f1ad",
+                "shasum": ""
+            },
+            "require": {
+                "http-interop/http-factory": "^0.3.0"
+            },
+            "require-dev": {
+                "http-interop/http-factory-tests": "^0.3.0",
+                "overtrue/phplint": "^0.2.1",
+                "phpunit/phpunit": "^5.7",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tuupola\\Http\\Factory\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1193,16 +1448,81 @@
                     "role": "Developer"
                 }
             ],
-            "description": "PSR-7 JWT Authentication Middleware",
+            "description": "Lightweight autodiscovering PSR-17 HTTP factories",
+            "homepage": "https://github.com/tuupola/http-factory",
+            "keywords": [
+                "http",
+                "psr-17",
+                "psr-7"
+            ],
+            "time": "2017-07-15T22:03:15+00:00"
+        },
+        {
+            "name": "tuupola/slim-jwt-auth",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tuupola/slim-jwt-auth.git",
+                "reference": "b195031f3732bc2e050bbb203329825377b9f8cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tuupola/slim-jwt-auth/zipball/b195031f3732bc2e050bbb203329825377b9f8cb",
+                "reference": "b195031f3732bc2e050bbb203329825377b9f8cb",
+                "shasum": ""
+            },
+            "require": {
+                "firebase/php-jwt": "^3.0 || ^4.0 || ^5.0",
+                "php": "^7.1",
+                "psr/http-message": "^1.0",
+                "psr/http-server-middleware": "^1.0",
+                "psr/log": "^1.0",
+                "tuupola/callable-handler": "^0.3.0",
+                "tuupola/http-factory": "^0.3.0"
+            },
+            "require-dev": {
+                "codedungeon/phpunit-result-printer": "^0.5.4",
+                "equip/dispatch": "^2.0",
+                "overtrue/phplint": "^0.2.4",
+                "phpstan/phpstan": "^0.9.1",
+                "phpunit/phpunit": "^6.5",
+                "squizlabs/php_codesniffer": "^2.3",
+                "zendframework/zend-diactoros": "^1.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-3.x": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Tuupola\\Middleware\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mika Tuupola",
+                    "email": "tuupola@appelsiini.net",
+                    "homepage": "http://www.appelsiini.net/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PSR-7 and PSR-15 JWT Authentication Middleware",
             "homepage": "https://github.com/tuupola/slim-jwt-auth",
             "keywords": [
                 "auth",
                 "json",
                 "jwt",
                 "middleware",
+                "psr-15",
                 "psr-7"
             ],
-            "time": "2017-07-12T09:57:35+00:00"
+            "time": "2018-03-02T06:33:46+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

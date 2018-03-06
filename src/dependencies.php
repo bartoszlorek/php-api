@@ -2,6 +2,7 @@
 // DIC configuration
 
 use App\Middleware\OptionalAuth;
+use App\Exceptions\Error;
 use League\Fractal\Manager;
 use League\Fractal\Serializer\ArraySerializer;
 
@@ -9,11 +10,14 @@ $container = $app->getContainer();
 $container->register(new \App\Services\Database\EloquentServiceProvider());
 $container->register(new \App\Services\Auth\AuthServiceProvider());
 
-$container['errorHandler'] = function ($c) {
-    return new \App\Exceptions\ErrorHandler(
-        $c['settings']['displayErrorDetails']
-    );
+$errorHandler = function ($c) {
+    return new Error($c['settings']['displayErrorDetails']);
 };
+
+$container['errorHandler'] = $errorHandler;
+$container['notAllowedHandler'] = $errorHandler;
+$container['notFoundHandler'] = $errorHandler;
+$container['phpErrorHandler'] = $errorHandler;
 
 $container['logger'] = function ($c) {
     $settings = $c->get('settings')['logger'];
@@ -28,10 +32,10 @@ $container['logger'] = function ($c) {
 
 $container['jwt'] = function ($c) {
     $jws_settings = $c->get('settings')['jwt'];
-    $jws_settings['error'] = function ($request, $response) {
-        return \App\Controllers\BaseController::result($response, 'unauthorized', 401);
+    $jws_settings['error'] = function ($response, $arguments) {
+        return Error::unauthorized($response);
     };
-    return new \Slim\Middleware\JwtAuthentication($jws_settings);
+    return new Tuupola\Middleware\JwtAuthentication($jws_settings);
 };
 
 $container['optionalAuth'] = function ($c) {

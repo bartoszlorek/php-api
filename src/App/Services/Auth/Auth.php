@@ -60,7 +60,7 @@ class Auth {
      */
     public function requestUser(Request $request) {
         if ($token = $request->getAttribute('token')) {
-            return User::where(static::SUBJECT_IDENTIFIER, '=', $token->sub)->first();
+            return User::where(static::SUBJECT_IDENTIFIER, '=', $token['sub'])->first();
         }
         return null;
     }
