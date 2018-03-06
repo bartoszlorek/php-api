@@ -26,7 +26,7 @@ class RegisterController extends BaseController {
         $validation = $this->validateRegisterRequest($userData);
 
         if ($validation->failed()) {
-            return $this->result($response, $validation->getErrors(), 422);
+            return $this->render($response, $validation->getErrors(), 422);
         }
         $user = new User($userData);
         $user->token = $this->auth->generateToken($user);
@@ -35,7 +35,7 @@ class RegisterController extends BaseController {
 
         $resource = new Item($user, new UserTransformer());
         $user = $this->fractal->createData($resource)->toArray();
-        return $this->result($response, $user);
+        return $this->render($response, $user);
     }
 
     protected function validateRegisterRequest($values) {

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Interop\Container\ContainerInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Helpers\Json;
 
 class BaseController {
 
@@ -21,18 +22,11 @@ class BaseController {
     }
 
     public function getParsedBody(Request $request) {
-        return json_decode($request->getBody(), true);
+        return Json::getParsedBody($request);
     }
 
-    public function result(Response $response, $value = '', int $code = 200) {
-        $isSuccess = $code >= 200 && $code < 300;
-        $property = $isSuccess ? 'data' : 'message';
-
-        return $response->withJson([
-            'code' => $code,
-            'status' => $isSuccess ? 'success' : 'error',
-            $property => $value
-        ]);
+    public function render(Response $response, $value = '', int $code = 200) {
+        return Json::render($response, $value, $code);
     }
 
 }

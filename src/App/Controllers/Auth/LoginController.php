@@ -29,9 +29,9 @@ class LoginController extends BaseController {
         ) {
             $user->token = $this->auth->generateToken($user);
             $data = $this->fractal->createData(new Item($user, new UserTransformer()))->toArray();
-            return $this->result($response, $data);
+            return $this->render($response, $data);
         }
-        return $this->result($response, 'invalid e-mail or password', 422);
+        return $this->render($response, 'Invalid e-mail or password', 422);
     }
 
     protected function validateLoginRequest($values) {
