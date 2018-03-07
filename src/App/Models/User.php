@@ -16,12 +16,14 @@ use Illuminate\Database\Eloquent\Model;
  */
 class User extends Model {
 
+    protected $attributes = [
+        'role' => 'user'
+    ];
+
     protected $fillable = [
         'email',
         'username',
-        'password',
-        'role',
-        'token',
+        'password'
     ];
 
     protected $hidden = [
@@ -35,18 +37,4 @@ class User extends Model {
         return $this->belongsToMany(Page::class, 'pages_users');
     }
 
-    // public function hasAccessToPage($page_id = null) {
-    //     if (is_null($page_id)) {
-    //         return false;
-    //     }
-    //     if ($page_id instanceof self) {
-    //         $page_id = $page_id->id;
-    //     }
-    //     return $this->newBaseQueryBuilder()
-    //         ->from('user_pages')
-    //         ->where('user_id', $this->id)
-    //         ->where('page_id', $page_id)
-    //         ->exists();
-    // }
-    
 }

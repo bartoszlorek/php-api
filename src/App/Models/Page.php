@@ -6,33 +6,28 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property integer            id
+ * @property string             guid
+ * @property string             type
+ * @property string             status
  * @property string             title
- * @property string             slug
+ * @property string             state
  * @property string             body
  * @property \Carbon\Carbon     created_at
  * @property \Carbon\Carbon     updated_at
  */
 class Page extends Model {
 
-    protected $fillable = [
-        'title',
-        'slug',
-        'body',
+    protected $attributes = [
+        'type' => 'page',
+        'status' => 'active',
+        'state' => '',
+        'body' => ''
     ];
 
-    // TODO: handle slug
-
-    // public function setSlugAttribute($value) {
-    //     $index = 0;
-    //     $slug = $value;
-    //     while (self::newQuery()
-    //         ->where('slug', $slug)
-    //         ->where('id', '!=', $this->id)
-    //         ->exists()) {
-    //         $slug = $value . '-' . ++$index;
-    //     }
-    //     return $this->attributes['slug'] = $slug;
-    // }
+    protected $fillable = [
+        'title',
+        'body'
+    ];
 
     /*
      *  Relationships
@@ -41,28 +36,20 @@ class Page extends Model {
         return $this->belongsToMany(User::class, 'pages_users');
     }
 
-    public function addUser($user_id) {
-        $this->users()->syncWithoutDetaching([$user_id]);
+    public function attachUser(int $userId) {
+        $this->users()->syncWithoutDetaching($userId);
         return $this;
     }
 
-    public function removeUser($user_id) {
-        $this->users()->detach($user_id);
+    public function detachUser(int $userId) {
+        $this->users()->detach($userId);
         return $this;
     }
 
-    // public function isUserPage($user_id = null) {
-    //     if (is_null($user_id)) {
-    //         return false;
-    //     }
-    //     if ($user_id instanceof self) {
-    //         $user_id = $user_id->id;
-    //     }
-    //     return $this->newBaseQueryBuilder()
-    //         ->from('user_pages')
-    //         ->where('user_id', $user_id)
-    //         ->where('page_id', $this->id)
-    //         ->exists();
-    // }
-    
+    public function scopeWhereInUsers($query, $userId) {
+        return $query->whereHas('users', function($subQuery) use ($userId) {
+            $subQuery->where('user_id', $userId);
+        });
+    }
+
 }
