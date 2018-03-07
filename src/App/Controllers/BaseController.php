@@ -21,16 +21,16 @@ class BaseController {
         $this->db = $container->get('db');
     }
 
-    public function getParsedBody(Request $request) {
-        return Json::getParsedBody($request);
-    }
-
     public function render(Response $response, $value = null, $code = 200) {
         return Json::render($response, $value, $code);
     }
 
+    public function getParsedBody(Request $request, array $defaults = array()) {
+        return $this->parseArgs(Json::getParsedBody($request), $defaults);
+    }
+
     public function parseArgs(array $args, array $defaults = array()) {
-        return array_merge($defaults, $args);
+        return !empty($defaults) ? array_merge($defaults, $args) : $args;
     }
 
 }
