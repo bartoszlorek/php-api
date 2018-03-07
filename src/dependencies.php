@@ -1,10 +1,10 @@
 <?php
 // DIC configuration
 
-use App\Middleware\OptionalAuth;
 use App\Exceptions\Error;
+use App\Helpers\CustomArraySerializer;
+use App\Middleware\OptionalAuth;
 use League\Fractal\Manager;
-use League\Fractal\Serializer\ArraySerializer;
 
 $container = $app->getContainer();
 $container->register(new \App\Services\Database\EloquentServiceProvider());
@@ -49,6 +49,6 @@ $container['validator'] = function ($c) {
 
 $container['fractal'] = function ($c) {
     $manager = new Manager();
-    $manager->setSerializer(new ArraySerializer());
+    $manager->setSerializer(new CustomArraySerializer());
     return $manager;
 };
