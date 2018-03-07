@@ -21,17 +21,18 @@ $app->group('/api', function () {
     $this->post('/auth/login', LoginController::class . ':login')->setName('auth.login');
 
     // User Routes
+    $this->delete('/user', UserController::class . ':delete')->add($jwtMiddleware)->setName('user.delete');
     $this->get('/user', UserController::class . ':show')->add($jwtMiddleware)->setName('user.show');
     $this->put('/user', UserController::class . ':update')->add($jwtMiddleware)->setName('user.update');
-    $this->delete('/user', UserController::class . ':delete')->add($jwtMiddleware)->setName('user.delete');
 
     // Page Routes
     $this->post('/page', PageController::class . ':create')->add($jwtMiddleware)->setName('page.create');
-    $this->get('/page', PageController::class . ':index')->add($optionalAuth)->setName('page.index');
+    $this->delete('/page/{guid}', PageController::class . ':delete')->add($jwtMiddleware)->setName('page.delete');
 
+    $this->get('/page', PageController::class . ':index')->add($optionalAuth)->setName('page.index');
     $this->get('/page/{guid}', PageController::class . ':show')->add($optionalAuth)->setName('page.show');
     $this->put('/page/{guid}', PageController::class . ':update')->add($jwtMiddleware)->setName('page.update');
-    $this->delete('/page/{guid}', PageController::class . ':delete')->add($jwtMiddleware)->setName('page.delete');
+    
 
 
     // // Comments

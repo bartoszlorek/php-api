@@ -14,12 +14,6 @@ use Respect\Validation\Validator as v;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-/*
-{
-    "title": "Hello World!",
-    "body": "1234"
-}
-*/
 class PageController extends BaseController {
 
     /**
@@ -27,22 +21,21 @@ class PageController extends BaseController {
      * @return Response
      */
     public function index(Request $request, Response $response) {
-        if (!$user = $this->auth->requestUser($request)) {
-            return Error::unauthorized($response);
-        }
-        $data = $this->parseArgs($request->getQueryParams(), [
-            'offset' => 0,
-            'limit' => 1
-        ]);
-        $pages = Page::whereInUsers($user->id)
-            ->orderBy('updated_at', 'desc')
-            ->offset($data['offset'])
-            ->limit($data['limit'])
-            ->get();
+        if ($user = $this->auth->requestUser($request)) {
+            $data = $this->parseArgs($request->getQueryParams(), [
+                'offset' => 0,
+                'limit' => 1
+            ]);
+            $pages = Page::whereInUsers($user->id)
+                ->orderBy('updated_at', 'desc')
+                ->offset($data['offset'])
+                ->limit($data['limit'])
+                ->get();
 
-        $resource = new Collection($pages, new PageListTransformer);
-        $pages = $this->fractal->createData($resource)->toArray();
-        return $this->render($response, $pages);
+            $result = $this->getResources($pages, new PageListTransformer);
+            return $this->render($response, $result);
+        }
+        return Error::unauthorized($response);
     }
 
     /**
@@ -50,16 +43,15 @@ class PageController extends BaseController {
      * @return Response
      */
     public function show(Request $request, Response $response, array $args) {
-        if (!$user = $this->auth->requestUser($request)) {
-            return Error::unauthorized($response);
-        }
-        $page = Page::where('guid', $args['guid'])
-            ->whereInUsers($user->id)
-            ->get();
+        if ($user = $this->auth->requestUser($request)) {
+            $page = Page::where('guid', $args['guid'])
+                ->whereInUsers($user->id)
+                ->get();
 
-        $resource = new Collection($page, new PageTransformer);
-        $page = $this->fractal->createData($resource)->toArray();
-        return $this->render($response, $page);
+            $result = $this->getResources($page, new PageTransformer);
+            return $this->render($response, $result);
+        }
+        return Error::unauthorized($response);
     }
 
     /**
@@ -67,27 +59,26 @@ class PageController extends BaseController {
      * @return Response
      */
     public function create(Request $request, Response $response) {
-        if (!$user = $this->auth->requestUser($request)) {
-            return Error::unauthorized($response);
+        if ($user = $this->auth->requestUser($request)) {
+            $data = $this->getParsedBody($request);
+            $validation = $this->validateCreateRequest($data);
+
+            if ($validation->failed()) {
+                return $this->render($response, $validation->getErrors(), 422);
+            }
+            $page = new Page($data);
+            $page->guid = 'temporary';
+            $page->save();
+
+            // id is available only from existing record
+            $page->guid = $this->auth->generateGuid($page->id);
+            $page->attachUser($user->id);
+            $page->save();
+
+            $result = $this->getResources($page, new PageListTransformer);
+            return $this->render($response, $result, 201);
         }
-        $pageData = $this->getParsedBody($request);
-        $validation = $this->validateCreateRequest($pageData);
-
-        if ($validation->failed()) {
-            return $this->render($response, $validation->getErrors(), 422);
-        }
-        $page = new Page($pageData);
-        $page->guid = 'temporary';
-        $page->save();
-
-        // id is available only from existing record
-        $page->guid = $this->auth->generateGuid($page->id);
-        $page->attachUser($user->id);
-        $page->save();
-
-        $resource = new Item($page, new PageTransformer);
-        $page = $this->fractal->createData($resource)->toArray();
-        return $this->render($response, $page, 201);
+        return Error::unauthorized($response);
     }
 
     /**
