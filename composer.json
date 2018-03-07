@@ -14,7 +14,8 @@
         "vlucas/phpdotenv": "^2.4",
         "respect/validation": "^1.1",
         "league/fractal": "^0.17.0",
-        "tuupola/slim-jwt-auth": "^3.0"
+        "tuupola/slim-jwt-auth": "^3.0",
+        "hashids/hashids": "^2.0"
     },
     "autoload": {
         "psr-4": {

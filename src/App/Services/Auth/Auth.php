@@ -8,6 +8,7 @@ use Firebase\JWT\JWT;
 use Illuminate\Database\Capsule\Manager;
 use Slim\Collection;
 use Slim\Http\Request;
+use Hashids\Hashids;
 
 class Auth {
 
@@ -15,10 +16,12 @@ class Auth {
 
     private $db;
     private $appConfig;
+    private $hashids;
 
     public function __construct(Manager $db, Collection $appConfig) {
         $this->db = $db;
         $this->appConfig = $appConfig;
+        $this->hashids = new Hashids('', 6);
     }
 
     /**
@@ -63,6 +66,13 @@ class Auth {
             return User::where(static::SUBJECT_IDENTIFIER, '=', $token['sub'])->first();
         }
         return null;
+    }
+
+    /**
+     * Generate a new GUID
+     */
+    public function generateGuid(int $id) {
+        return $this->hashids->encode($id);
     }
 
 }
