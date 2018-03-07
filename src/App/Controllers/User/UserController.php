@@ -58,7 +58,7 @@ class UserController extends BaseController {
     public function delete(Request $request, Response $response) {
         if ($user = $this->auth->requestUser($request)) {
             $user->delete();
-            return $this->render($response, 'Successfully deleted user', 200);
+            return $this->render($response, 'successfully deleted user', 200);
         }
         return Error::unauthorized($response);
     }
