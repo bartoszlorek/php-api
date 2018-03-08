@@ -21,6 +21,14 @@ class Error {
         return self::internalServer($response);
     }
 
+    public static function unauthorized(ResponseInterface $response) {
+        return Json::render($response, 'Unauthorized', 401);
+    }
+
+    public static function forbidden(ResponseInterface $response) {
+        return Json::render($response, 'Forbidden', 403);
+    }
+
     public static function notFound(ResponseInterface $response) {
         return Json::render($response, 'Not Found', 404);
     }
@@ -31,10 +39,6 @@ class Error {
 
     public static function internalServer(ResponseInterface $response) {
         return Json::render($response, 'Internal Server Error', 500);
-    }
-
-    public static function unauthorized(ResponseInterface $response) {
-        return Json::render($response, 'Unauthorized', 401);
     }
 
 }
