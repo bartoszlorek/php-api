@@ -17,7 +17,7 @@ use Slim\Http\Response;
 class PageController extends BaseController {
 
     /**
-     * Return List of Pages
+     * Get Collection (or Item) of Request User Pages
      * @return Response
      */
     public function index(Request $request, Response $response) {
@@ -32,23 +32,28 @@ class PageController extends BaseController {
                 ->limit($data['limit'])
                 ->get();
 
-            $result = $this->getResources($pages, new PageListTransformer);
+            $result = $this->resources($pages, new PageListTransformer);
             return $this->render($response, $result);
         }
         return Error::unauthorized($response);
     }
 
     /**
-     * Return a Single Page
+     * Get Single Page by GUID
      * @return Response
      */
     public function show(Request $request, Response $response, array $args) {
         if ($user = $this->auth->requestUser($request)) {
-            $page = Page::where('guid', $args['guid'])
-                ->whereInUsers($user->id)
-                ->get();
+            $page = Page::where('guid', $args['guid']);
 
-            $result = $this->getResources($page, new PageTransformer);
+            // Admin doesn't need to be attached to this page
+            if ($user->isAdmin() == false) {
+                $page = $page->whereInUsers($user->id);
+            }
+            if (($page = $page->first()) == null) {
+                return Error::forbidden($response);
+            }
+            $result = $this->resources($page, new PageTransformer);
             return $this->render($response, $result);
         }
         return Error::unauthorized($response);
@@ -72,10 +77,13 @@ class PageController extends BaseController {
 
             // id is available only from existing record
             $page->guid = $this->auth->generateGuid($page->id);
-            $page->attachUser($user->id);
             $page->save();
 
-            $result = $this->getResources($page, new PageListTransformer);
+            // doesn't attach an Admin
+            if ($user->isAdmin() == false) {
+                $page->attachUser($user->id);
+            }
+            $result = $this->resources($page, new PageTransformer);
             return $this->render($response, $result, 201);
         }
         return Error::unauthorized($response);
@@ -86,31 +94,34 @@ class PageController extends BaseController {
      * @return Response
      */
     public function update(Request $request, Response $response, array $args) {
-        $page = Page::query()->where('slug', $args['slug'])->firstOrFail();
-        $requestUser = $this->auth->requestUser($request);
+        if ($user = $this->auth->requestUser($request)) {
+            $page = Page::where('guid', $args['guid']);
 
-        if (is_null($requestUser)) {
-            return $response->withJson([], 401);
+            // Admin doesn't need to be attached to this page
+            if ($user->isAdmin() == false) {
+                $page = $page->whereInUsers($user->id);
+            }
+            if (($page = $page->first()) == null) {
+                return Error::forbidden($response);
+            }
+            $data = $this->getParsedBody($request);
+            $validation = $this->validateUpdateRequest($data);
+
+            if ($validation->failed()) {
+                return $this->render($response, $validation->getErrors(), 422);
+            }
+            // fields available to a Common User
+            $page->set($data, ['title', 'body']);
+
+            // fields available to an Admin or Moderator
+            if ($user->isCommonUser() == false) {
+                $page->set($data, ['status', 'state']);
+            }
+            $page->save();
+            $result = $this->resources($page, new PageTransformer);
+            return $this->render($response, $result);
         }
-        if ($requestUser->id != $page->user_id) {
-            return $response->withJson(['message' => 'Forbidden'], 403);
-        }
-
-        $params = $request->getParam('page', []);
-
-        $page->update([
-            'title' => isset($params['title']) ? $params['title'] : $page->title,
-            'body' => isset($params['body']) ? $params['body'] : $page->body,
-        ]);
-        if (isset($params['title'])) {
-            $page->slug = str_slug($params['title']);
-        }
-
-        $data = $this->fractal
-            ->createData(new Item($page, new PageTransformer()))
-            ->toArray();
-
-        return $response->withJson(['page' => $data]);
+        return Error::unauthorized($response);
     }
 
     /**
@@ -118,18 +129,21 @@ class PageController extends BaseController {
      * @return Response
      */
     public function delete(Request $request, Response $response, array $args) {
-        $page = Page::query()->where('slug', $args['slug'])->firstOrFail();
-        $requestUser = $this->auth->requestUser($request);
+        if ($user = $this->auth->requestUser($request)) {
+            $page = Page::where('guid', $args['guid']);
 
-        if (is_null($requestUser)) {
-            return $response->withJson([], 401);
+            // Admin doesn't need to be attached to this page
+            if ($user->isAdmin() == false) {
+                $page = $page->whereInUsers($user->id);
+            }
+            if (($page = $page->first()) == null) {
+                return Error::forbidden($response);
+            }
+            $page->users()->detach();
+            $page->delete();
+            return $this->render($response, 'successfully deleted page', 200);
         }
-        if ($requestUser->id != $page->user_id) {
-            return $response->withJson(['message' => 'Forbidden'], 403);
-        }
-        $page->delete();
-
-        return $response->withJson([], 200);
+        return Error::unauthorized($response);
     }
 
     /**
@@ -138,6 +152,16 @@ class PageController extends BaseController {
     protected function validateCreateRequest($values) {
         return $this->validator->validateArray($values, [
             'title' => v::notEmpty()
+        ]);
+    }
+
+    protected function validateUpdateRequest($values) {
+        return $this->validator->validateArray($values, [
+            'title' => v::optional(v::stringType()),
+            'type' => v::optional(v::stringType()),
+            'status' => v::optional(v::stringType()),
+            'state' => v::optional(v::stringType()),
+            'body' => v::optional(v::stringType())
         ]);
     }
 
