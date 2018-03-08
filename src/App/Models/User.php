@@ -16,8 +16,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class User extends Model {
 
+    const ROLE_USER = 'user';
+    const ROLE_MODERATOR = 'moderator';
+    const ROLE_ADMIN = 'admin';
+
     protected $attributes = [
-        'role' => 'user'
+        'role' => self::ROLE_USER
     ];
 
     protected $fillable = [
@@ -27,7 +31,7 @@ class User extends Model {
     ];
 
     protected $hidden = [
-        'password',
+        'password'
     ];
     
     /*
@@ -35,6 +39,18 @@ class User extends Model {
      */
     public function pages() {
         return $this->belongsToMany(Page::class, 'pages_users');
+    }
+
+    public function isCommonUser() {
+        return $this->role === self::ROLE_USER;
+    }
+
+    public function isModerator() {
+        return $this->role === self::ROLE_MODERATOR;
+    }
+
+    public function isAdmin() {
+        return $this->role === self::ROLE_ADMIN;
     }
 
 }
