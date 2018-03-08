@@ -27,12 +27,10 @@ $app->group('/api', function () {
 
     // Page Routes
     $this->post('/page', PageController::class . ':create')->add($jwtMiddleware)->setName('page.create');
-    $this->delete('/page/{guid}', PageController::class . ':delete')->add($jwtMiddleware)->setName('page.delete');
-
     $this->get('/page', PageController::class . ':index')->add($optionalAuth)->setName('page.index');
     $this->get('/page/{guid}', PageController::class . ':show')->add($optionalAuth)->setName('page.show');
     $this->put('/page/{guid}', PageController::class . ':update')->add($jwtMiddleware)->setName('page.update');
-    
+    $this->delete('/page/{guid}', PageController::class . ':delete')->add($jwtMiddleware)->setName('page.delete');
 
 
     // // Comments

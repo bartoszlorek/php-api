@@ -12,7 +12,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 use Illuminate\Database\Eloquent\Collection as DBCollection;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as DBModel;
 
 class BaseController {
 
@@ -40,17 +40,17 @@ class BaseController {
         return !empty($defaults) ? array_merge($defaults, $args) : $args;
     }
 
-    public function getResources($data, TransformerAbstract $transformer) {
-        $resources = null;
+    public function resources($data, TransformerAbstract $transformer) {
+        $result = null;
         
         if ($data instanceof DBCollection) {
-            $resources = new Collection($data, $transformer);
+            $result = new Collection($data, $transformer);
         }
-        if ($data instanceof Model) {
-            $resources = new Item($data, $transformer);
+        if ($data instanceof DBModel) {
+            $result = new Item($data, $transformer);
         }
-        if ($resources !== null) {
-            return $this->fractal->createData($resources)->toArray();
+        if ($result !== null) {
+            return $this->fractal->createData($result)->toArray();
         }
         return array();
     }

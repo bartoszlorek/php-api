@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * @property integer            id
  * @property string             guid
@@ -15,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon     created_at
  * @property \Carbon\Carbon     updated_at
  */
-class Page extends Model {
+class Page extends BaseModel {
 
     protected $attributes = [
         'type' => 'page',
@@ -25,6 +23,7 @@ class Page extends Model {
     ];
 
     protected $fillable = [
+        'type',
         'title',
         'body'
     ];
@@ -44,6 +43,12 @@ class Page extends Model {
     public function detachUser(int $userId) {
         $this->users()->detach($userId);
         return $this;
+    }
+
+    public function containsUser($userId) {
+        return $this->users()
+            ->where('user_id', $userId)
+            ->exists();
     }
 
     public function scopeWhereInUsers($query, $userId) {
