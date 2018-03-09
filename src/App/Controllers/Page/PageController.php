@@ -118,6 +118,11 @@ class PageController extends BaseController {
                 $page->set($data, ['status', 'state']);
             }
             $page->save();
+
+            // attach new user
+            if (isset($data['user'])) {
+                $page->attachUser((int) $data['user']);
+            }
             $result = $this->resources($page, new PageTransformer);
             return $this->render($response, $result);
         }
