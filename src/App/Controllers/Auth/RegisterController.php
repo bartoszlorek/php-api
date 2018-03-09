@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Controllers\BaseController;
 use App\Transformers\UserTransformer;
 
-use League\Fractal\Resource\Item;
 use Respect\Validation\Validator as v;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -21,20 +20,19 @@ use Slim\Http\Response;
 class RegisterController extends BaseController {
 
     public function register(Request $request, Response $response) {
-        $userData = $this->getParsedBody($request);
-        $validation = $this->validateRegisterRequest($userData);
+        $data = $this->getParsedBody($request);
+        $validation = $this->validateRegisterRequest($data);
 
         if ($validation->failed()) {
             return $this->render($response, $validation->getErrors(), 422);
         }
-        $user = new User($userData);
+        $user = new User($data);
         $user->token = $this->auth->generateToken($user);
-        $user->password = password_hash($userData['password'], PASSWORD_DEFAULT);
+        $user->password = password_hash($data['password'], PASSWORD_DEFAULT);
         $user->save();
 
-        $resource = new Item($user, new UserTransformer());
-        $user = $this->fractal->createData($resource)->toArray();
-        return $this->render($response, $user, 201);
+        $result = $this->resources($user, new UserTransformer);
+        return $this->render($response, $result, 201);
     }
 
     /**
