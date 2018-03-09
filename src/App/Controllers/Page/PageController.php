@@ -8,8 +8,6 @@ use App\Transformers\PageTransformer;
 use App\Transformers\PageListTransformer;
 use App\Exceptions\Error;
 
-use League\Fractal\Resource\Collection;
-use League\Fractal\Resource\Item;
 use Respect\Validation\Validator as v;
 use Slim\Http\Request;
 use Slim\Http\Response;
