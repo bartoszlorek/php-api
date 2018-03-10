@@ -15,9 +15,15 @@ namespace App\Models;
  */
 class Page extends BaseModel {
 
+    const TYPE_PAGE = 'page';
+
+    const STATUS_ACTIVE = 'active';
+    const STATUS_CLOSED = 'closed';
+    const STATUS_PAYMENT = 'payment';
+
     protected $attributes = [
-        'type' => 'page',
-        'status' => 'active',
+        'type' => self::TYPE_PAGE,
+        'status' => self::STATUS_ACTIVE,
         'state' => '',
         'body' => ''
     ];
