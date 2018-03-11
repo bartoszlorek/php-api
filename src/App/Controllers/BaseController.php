@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Helpers\Json;
+use App\Models\Page;
+use App\Models\User;
 
 use Interop\Container\ContainerInterface;
 use League\Fractal\TransformerAbstract;
@@ -53,6 +55,16 @@ class BaseController {
             return $this->fractal->createData($result)->toArray();
         }
         return array();
+    }
+
+    public function requestPage(string $guid, User $user) {
+        $page = Page::where('guid', $guid);
+
+        // Admin doesn't need to be attached
+        if ($user->isAdmin() == false) {
+            $page = $page->whereInUsers($user->id);
+        }
+        return $page->first();
     }
 
 }

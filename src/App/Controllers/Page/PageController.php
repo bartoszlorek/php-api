@@ -2,7 +2,6 @@
 
 namespace App\Controllers\Page;
 
-use App\Models\User;
 use App\Models\Page;
 use App\Controllers\BaseController;
 use App\Transformers\PageTransformer;
@@ -18,16 +17,6 @@ class PageController extends BaseController {
     const DELETED = 'the page has been deleted';
     const ATTACHED = 'the user has been attached';
     const DETACHED = 'the user has been detached';
-
-    private function requestPage(string $guid, User $user) {
-        $page = Page::where('guid', $guid);
-
-        // Admin doesn't need to be attached
-        if ($user->isAdmin() == false) {
-            $page = $page->whereInUsers($user->id);
-        }
-        return $page->first();
-    }
 
     /**
      * Get Collection (or Item) of Request User Pages
