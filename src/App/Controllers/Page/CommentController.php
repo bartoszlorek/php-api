@@ -3,94 +3,81 @@
 namespace App\Controllers\Page;
 
 use App\Models\Comment;
-use App\Models\Page;
+use App\Controllers\BaseController;
 use App\Transformers\CommentTransformer;
-use Interop\Container\ContainerInterface;
-use League\Fractal\Resource\Collection;
-use League\Fractal\Resource\Item;
-use Respect\Validation\Validator as valid;
+use App\Exceptions\Error;
+
+use Respect\Validation\Validator as v;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class CommentController
-{
-    protected $auth;
-    protected $fractal;
-    protected $validator;
-    protected $db;
+class CommentController extends BaseController {
 
-    public function __construct(ContainerInterface $container)
-    {
-        $this->auth = $container->get('auth');
-        $this->fractal = $container->get('fractal');
-        $this->validator = $container->get('validator');
-        $this->db = $container->get('db');
+    const DELETED = 'the comment has been deleted';
+
+    /**
+     * Get Collection of all Comments in given Page
+     * @return Response
+     */
+    public function index(Request $request, Response $response, array $args) {
+        if (!$user = $this->auth->requestUser($request)) {
+            return Error::unauthorized($response);
+        }
+        if (!$page = $this->requestPage($args['guid'], $user)) {
+            return Error::forbidden($response);
+        }
+        $result = $this->resources($page->comments, new CommentTransformer);
+        return $this->render($response, $result);
     }
 
     /**
-     * Return a all Comment for a page
+     * Create a New Comment
+     * @return Response
      */
-    public function index(Request $request, Response $response, array $args)
-    {
-        $requestUserId = optional($this->auth->requestUser($request))->id;
-        $page = Page::query()->with('comments')->where('slug', $args['slug'])->firstOrFail();
-
-        $data = $this->fractal
-            ->createData(new Collection($page->comments, new CommentTransformer($requestUserId)))
-            ->toArray();
-
-        return $response->withJson(['comments' => $data['data']]);
-    }
-
-    /**
-     * Create a new comment
-     */
-    public function store(Request $request, Response $response, array $args)
-    {
-        $page = Page::query()->where('slug', $args['slug'])->firstOrFail();
-        $requestUser = $this->auth->requestUser($request);
-
-        if (is_null($requestUser)) {
-            return $response->withJson([], 401);
+    public function create(Request $request, Response $response, array $args) {
+        if (!$user = $this->auth->requestUser($request)) {
+            return Error::unauthorized($response);
         }
-
-        $this->validator->validateArray($data = $request->getParam('comment'), [
-            'body' => valid::notEmpty(),
-        ]);
-        if ($this->validator->failed()) {
-            return $response->withJson(['errors' => $this->validator->getErrors()], 422);
+        if (!$page = $this->requestPage($args['guid'], $user)) {
+            return Error::forbidden($response);
         }
+        $data = $this->getParsedBody($request);
+        $validation = $this->validateCreateRequest($data);
 
+        if ($validation->failed()) {
+            return $this->render($response, $validation->getErrors(), 422);
+        }
         $comment = Comment::create([
             'body' => $data['body'],
-            'user_id' => $requestUser->id,
-            'page_id' => $page->id,
+            'user_id' => $user->id,
+            'page_id' => $page->id
         ]);
-
-        $data = $this->fractal
-            ->createData(new Item($comment, new CommentTransformer()))
-            ->toArray();
-
-        return $response->withJson(['comment' => $data]);
+        $result = $this->resources($comment, new CommentTransformer);
+        return $this->render($response, $result, 201);
     }
 
     /**
-     * Delete A Comment Endpoint
+     * Delete a Comment
+     * @return Response
      */
-    public function destroy(Request $request, Response $response, array $args)
-    {
-        $comment = Comment::query()->findOrFail($args['id']);
-        $requestUser = $this->auth->requestUser($request);
-
-        if (is_null($requestUser)) {
-            return $response->withJson([], 401);
+    public function delete(Request $request, Response $response, array $args) {
+        if (!$user = $this->auth->requestUser($request)) {
+            return Error::unauthorized($response);
         }
-        if ($requestUser->id != $comment->user_id) {
-            return $response->withJson(['message' => 'Forbidden'], 403);
+        if (!$page = $this->requestPage($args['guid'], $user)) {
+            return Error::forbidden($response);
         }
-
-        $comment->delete();
-
-        return $response->withJson([], 200);
+        $comment = $page->comments()->where('id', $args['id'])->delete();
+        return $this->render($response, self::DELETED, 200);
     }
+
+    /**
+     * Validation
+     */
+    protected function validateCreateRequest($values) {
+        return $this->validator->validateArray($values, [
+            'body' => v::notEmpty()
+        ]);
+    }
+
 }

@@ -33,22 +33,13 @@ $app->group('/api', function () {
     $this->put('/page/{guid}', PageController::class . ':update')->add($jwtMiddleware)->setName('page.update');
     $this->delete('/page/{guid}', PageController::class . ':delete')->add($jwtMiddleware)->setName('page.delete');
 
-    $this->post('/page/{guid}/user', PageController::class . ':attach')->add($jwtMiddleware)->setName('page.attach');
-    $this->delete('/page/{guid}/user', PageController::class . ':detach')->add($jwtMiddleware)->setName('page.detach');
+    $this->post('/page/{guid}/users', PageController::class . ':attach')->add($jwtMiddleware)->setName('page.attach');
+    $this->delete('/page/{guid}/users', PageController::class . ':detach')->add($jwtMiddleware)->setName('page.detach');
 
-    // // Comments
-    // $this->get('/articles/{slug}/comments',
-    //     CommentController::class . ':index')
-    //     ->add($optionalAuth)
-    //     ->setName('comment.index');
-    // $this->post('/articles/{slug}/comments',
-    //     CommentController::class . ':store')
-    //     ->add($jwtMiddleware)
-    //     ->setName('comment.store');
-    // $this->delete('/articles/{slug}/comments/{id}',
-    //     CommentController::class . ':destroy')
-    //     ->add($jwtMiddleware)
-    //     ->setName('comment.destroy');
+    // Comments
+    $this->post('/page/{guid}/comments', CommentController::class . ':create')->add($jwtMiddleware)->setName('comment.create');
+    $this->get('/page/{guid}/comments', CommentController::class . ':index')->add($optionalAuth)->setName('comment.index');
+    $this->delete('/page/{guid}/comments/{id}', CommentController::class . ':delete')->add($jwtMiddleware)->setName('comment.delete');
 
     // // Favorite Article Routes
     // $this->post('/articles/{slug}/favorite',

@@ -57,9 +57,19 @@ class Page extends BaseModel {
             ->exists();
     }
 
-    public function scopeWhereInUsers($query, $userId) {
+    public function scopeWhereInUsers($query, int $userId) {
         return $query->whereHas('users', function($subQuery) use ($userId) {
             $subQuery->where('user_id', $userId);
+        });
+    }
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function scopeWhereInComments($query, int $commentId) {
+        return $query->whereHas('comments', function($subQuery) use ($userId) {
+            $subQuery->where('id', $commentId);
         });
     }
 
