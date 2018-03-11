@@ -50,6 +50,8 @@ return [
         'jwt' => [
             'secret' => getenv('JWT_SECRET'),
             'secure' => false // true for HTTPS
-        ]
+        ],
+
+        'uploads' => __DIR__ . '/../uploads'
     ]
 ];
