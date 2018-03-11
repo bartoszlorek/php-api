@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * @property integer            id
  * @property string             email
@@ -14,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon     created_at
  * @property \Carbon\Carbon     updated_at
  */
-class User extends Model {
+class User extends BaseModel {
 
     const ROLE_USER = 'user';
     const ROLE_MODERATOR = 'moderator';
