@@ -39,6 +39,9 @@ class User extends BaseModel {
         return $this->belongsToMany(Page::class, 'pages_users');
     }
 
+    /*
+     *  Methods
+     */
     public function isCommonUser() {
         return $this->role === self::ROLE_USER;
     }

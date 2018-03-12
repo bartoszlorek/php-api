@@ -3,8 +3,8 @@
 namespace App\Controllers;
 
 use App\Helpers\Json;
-use App\Models\Page;
 use App\Models\User;
+use App\Models\Page;
 
 use Interop\Container\ContainerInterface;
 use League\Fractal\TransformerAbstract;

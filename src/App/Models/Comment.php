@@ -21,13 +21,23 @@ class Comment extends BaseModel {
     /*
      *  Relationships
      */
-
     public function user() {
         return $this->belongsTo(User::class);
     }
 
     public function page() {
         return $this->belongsTo(Page::class);
+    }
+
+    public function files() {
+        return $this->hasMany(File::class);
+    }
+
+    /*
+     *  Methods
+     */
+    public function file(int $fileId) {
+        return $this->files()->where('id', $fileId)->first();
     }
 
 }

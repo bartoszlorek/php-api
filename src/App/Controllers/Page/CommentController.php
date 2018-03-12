@@ -67,7 +67,7 @@ class CommentController extends BaseController {
         if (!$page = $this->requestPage($args['guid'], $user)) {
             return Error::forbidden($response);
         }
-        $comment = $page->comments()->where('id', $args['id'])->delete();
+        $page->comment($args['commentId'])->delete();
         return $this->render($response, self::DELETED, 200);
     }
 

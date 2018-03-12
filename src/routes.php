@@ -5,8 +5,7 @@ use App\Controllers\Auth\LoginController;
 use App\Controllers\User\UserController;
 use App\Controllers\Page\PageController;
 use App\Controllers\Page\CommentController;
-use App\Controllers\Page\FavoriteController;
-use App\Controllers\User\ProfileController;
+use App\Controllers\Page\FileController;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -39,24 +38,12 @@ $app->group('/api', function () {
     // Comments
     $this->post('/page/{guid}/comments', CommentController::class . ':create')->add($jwtMiddleware)->setName('comment.create');
     $this->get('/page/{guid}/comments', CommentController::class . ':index')->add($optionalAuth)->setName('comment.index');
-    $this->delete('/page/{guid}/comments/{id}', CommentController::class . ':delete')->add($jwtMiddleware)->setName('comment.delete');
+    $this->delete('/page/{guid}/comments/{commentId}', CommentController::class . ':delete')->add($jwtMiddleware)->setName('comment.delete');
 
-    // // Favorite Article Routes
-    // $this->post('/articles/{slug}/favorite',
-    //     FavoriteController::class . ':store')
-    //     ->add($jwtMiddleware)
-    //     ->setName('favorite.store');
-    // $this->delete('/articles/{slug}/favorite',
-    //     FavoriteController::class . ':destroy')
-    //     ->add($jwtMiddleware)
-    //     ->setName('favorite.destroy');
-
-    // // Tags Route
-    // $this->get('/tags', function (Request $request, Response $response) {
-    //     return $response->withJson([
-    //         'tags' => Tag::all('title')->pluck('title'),
-    //     ]);
-    // });
+    // Files
+    $this->post('/page/{guid}/comments/{commentId}/files', FileController::class . ':create')->add($jwtMiddleware)->setName('file.create');
+    $this->get('/page/{guid}/comments/{commentId}/files', FileController::class . ':index')->add($optionalAuth)->setName('file.index');
+    $this->delete('/page/{guid}/comments/{commentId}/files/{fileId}', FileController::class . ':delete')->add($jwtMiddleware)->setName('file.delete');
 });
 
 // Routes

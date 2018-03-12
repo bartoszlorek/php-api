@@ -41,6 +41,13 @@ class Page extends BaseModel {
         return $this->belongsToMany(User::class, 'pages_users');
     }
 
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+    /*
+     *  Methods
+     */
     public function attachUser(int $userId) {
         $this->users()->syncWithoutDetaching($userId);
         return $this;
@@ -51,20 +58,17 @@ class Page extends BaseModel {
         return $this;
     }
 
-    public function containsUser($userId) {
-        return $this->users()
-            ->where('user_id', $userId)
-            ->exists();
+    public function comment(int $commentId) {
+        return $this->comments()->where('id', $commentId)->first();
     }
 
+    /*
+     *  Scopes
+     */
     public function scopeWhereInUsers($query, int $userId) {
         return $query->whereHas('users', function($subQuery) use ($userId) {
             $subQuery->where('user_id', $userId);
         });
-    }
-
-    public function comments() {
-        return $this->hasMany(Comment::class);
     }
 
     public function scopeWhereInComments($query, int $commentId) {

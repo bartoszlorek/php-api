@@ -4,20 +4,22 @@ namespace App\Models;
 
 /**
  * @property integer            id
- * @property string             file
+ * @property string             path
  * @property string             name
  * @property string             type
+ * @property integer            comment_id
  * @property \Carbon\Carbon     created_at
  * @property \Carbon\Carbon     updated_at
  */
-class Media extends BaseModel {
+class File extends BaseModel {
 
     protected $fillable = [
-        'file',
+        'path',
         'name',
-        'type'
+        'type',
+        'comment_id'
     ];
-    
+
     /*
      *  Relationships
      */
