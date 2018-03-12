@@ -3,6 +3,7 @@
 
 use App\Exceptions\Error;
 use App\Helpers\CustomArraySerializer;
+use App\Helpers\FileSystem;
 use App\Middleware\OptionalAuth;
 use League\Fractal\Manager;
 
@@ -51,4 +52,8 @@ $container['fractal'] = function ($c) {
     $manager = new Manager();
     $manager->setSerializer(new CustomArraySerializer());
     return $manager;
+};
+
+$container['fileSystem'] = function ($c) {
+    return new FileSystem($c);
 };
