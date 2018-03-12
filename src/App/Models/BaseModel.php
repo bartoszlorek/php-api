@@ -33,7 +33,7 @@ class BaseModel extends Model {
             return collect();
         }
         
-        // attempt predict new ids
+        // an attempt to predict new ids
         $lastId = self::orderBy('id', 'desc')->first()->id;
         $lastId -= count($data);
 
