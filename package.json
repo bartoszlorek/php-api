@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ubery/php-api.git"
+    "url": "git+https://github.com/sourcebery/php-api.git"
   },
   "author": "Bartosz Lorek",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ubery/php-api/issues"
+    "url": "https://github.com/sourcebery/php-api/issues"
   },
-  "homepage": "https://github.com/ubery/php-api#readme"
+  "homepage": "https://github.com/sourcebery/php-api#readme"
 }
