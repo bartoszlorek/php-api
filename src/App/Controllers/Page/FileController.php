@@ -33,7 +33,9 @@ class FileController extends BaseController {
         if (!$page = $this->requestPage($args['guid'], $user)) {
             return Error::forbidden($response);
         }
-        $comment = $page->comment($args['commentId']);
+        if (!$comment = $page->comment($args['commentId'])) {
+            return Error::notFound($response);
+        }
         $result = $this->resources($comment->files, new FileTransformer);
         return $this->render($response, $result);
     }
@@ -49,7 +51,9 @@ class FileController extends BaseController {
         if (!$page = $this->requestPage($args['guid'], $user)) {
             return Error::forbidden($response);
         }
-        $comment = $page->comment($args['commentId']);
+        if (!$comment = $page->comment($args['commentId'])) {
+            return Error::notFound($response);
+        }
         $uploadedFiles = $request->getUploadedFiles();
         $filesData = [];
 
@@ -82,11 +86,10 @@ class FileController extends BaseController {
         if (!$page = $this->requestPage($args['guid'], $user)) {
             return Error::forbidden($response);
         }
-        $file = $page
-            ->comment($args['commentId'])
-            ->file($args['fileId']);
-        
-        if ($file !== null) {
+        if (!$comment = $page->comment($args['commentId'])) {
+            return Error::notFound($response);
+        }
+        if ($file = $comment->file($args['fileId'])) {
             $this->fs->unlink($file->path);
             $file->delete();
         }
